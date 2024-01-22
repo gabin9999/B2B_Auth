@@ -11,9 +11,11 @@ class UserAuthController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
+            'request_id' => 'required',
             'name' => 'required|max:255',
+            'merchant_code' => 'required|unique:merchants,merchant_code',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required'
         ]);
 
         $data['password'] = bcrypt($request->password);
