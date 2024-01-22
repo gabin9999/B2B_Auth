@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Controllers\ValidationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,18 @@ use App\Http\Resources\EmployeeResource;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/register', [UserAuthController::class, 'register']);
-Route::post('/login', [UserAuthController::class, 'login']);
+Route::group([
+    'prefix' => 'b2b_auth/'
+], function () {
+    Route::post('/register', [UserAuthController::class, 'register']);
+    Route::post('/login', [UserAuthController::class, 'login']);
+    Route::post('refresh_token', [ValidationController::class, 'refreshToken']);
 
-Route::apiResource('/employee', 'EmployeeController')->middleware('auth:api');
+    Route::group([
+        'middleware' => 'auth:api'
+    ], function () {
+        Route::post('validate_merchant', [ValidationController::class, 'validateMerchant']);
+    });
+
+});
+

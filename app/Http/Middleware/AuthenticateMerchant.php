@@ -6,13 +6,13 @@ use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use App\Traits\ApiResponseTrait;
 
-class Authenticate extends Middleware
+class AuthenticateMerchant extends Middleware
 {
     use ApiResponseTrait;
     public function handle($request, Closure $next, ...$guards)
     {
-        if ($this->auth->guard('api')->guest()) {
-            return $this->errorResponse('Unauthorized. Token expired.', 401);
+        if ($this->auth->guard('merchant')->guest()) {
+            return $this->errorResponse('Unauthorized. Token expired', 401);
         }
 
         return $next($request);
